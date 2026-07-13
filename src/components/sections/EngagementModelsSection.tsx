@@ -27,29 +27,32 @@ export const EngagementModelsSection = () => {
   ];
 
   return (
-    <section className="py-24 relative bg-white dark:bg-transparent">
-      <div className="container mx-auto px-4 z-10 relative">
+    <section className="py-24 relative bg-slate-50 dark:bg-[#050B20]" id="engagement">
+      <div className="max-w-7xl mx-auto px-4 z-10 relative">
         <AnimatedSection className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6">Engagement Models</h2>
-          <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+          <p className="text-lg text-slate-600 dark:text-slate-350 max-w-2xl mx-auto">
             Flexible partnership options tailored to your business needs, project complexity, and operational requirements.
           </p>
         </AnimatedSection>
 
-        <div className="grid lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {models.map((model, index) => (
             <AnimatedSection key={model.title} delay={0.1 * (index + 1)} direction="up">
               <PremiumCard 
                 glowColor={model.color as any} 
-                className="h-full flex flex-col items-center text-center p-8"
+                className="h-full bg-white dark:bg-slate-900/30 border border-slate-200 dark:border-white/5 transition-all hover:-translate-y-1 duration-300"
+                hoverEffect
               >
-                <div className={`w-16 h-16 rounded-2xl bg-${model.color}-500/10 flex items-center justify-center mb-6`}>
-                  {model.icon}
+                <div className="flex flex-col items-center text-center w-full h-full py-4">
+                  <div className={`w-16 h-16 rounded-2xl bg-${model.color}-500/10 flex items-center justify-center mb-6`}>
+                    {model.icon}
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">{model.title}</h3>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">
+                    {model.description}
+                  </p>
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">{model.title}</h3>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                  {model.description}
-                </p>
               </PremiumCard>
             </AnimatedSection>
           ))}

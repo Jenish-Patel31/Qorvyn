@@ -4,20 +4,135 @@ import { AnimatedSection } from "../ui/AnimatedSection";
 import { PremiumCard } from "../ui/PremiumCard";
 import { GradientButton } from "../ui/GradientButton";
 import { Mail, Phone, MapPin, Calendar, Send, User, Building, PhoneCall, Briefcase, Coins, X } from "lucide-react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import emailjs from "@emailjs/browser";
+import { EMAILJS_CONFIG } from "../../config/emailjs";
+
+/*
+const GOOGLE_FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSdb-h3W6yIdp6Bu6jImEyNn73KlGmvz-8-3q6rORnj39fY1VA/formResponse";
+const FORM_FIELDS = [
+  { name: "entry.1794908884", key: "fullName" },
+  { name: "entry.1865925368", key: "email" },
+  { name: "entry.1521864711", key: "company" },
+  { name: "entry.1538834148", key: "phone" },
+  { name: "entry.202136330", key: "service" },
+  { name: "entry.1280273126", key: "budget" },
+  { name: "entry.1516595138", key: "description" },
+];
+*/
+const CONTACT_EMAIL = "qorvynsoftware@gmail.com";
+
+const EMPTY_FORM = { fullName: "", email: "", company: "", phone: "", service: "", budget: "", description: "" };
+
+const PHONE_PLACEHOLDERS = [
+  "+91 99798 91854",
+  "+1 (555) 000-0000",
+  "+44 20 7946 0958",
+];
 
 export const ContactSection = () => {
-  const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState(EMPTY_FORM);
+  const [placeholderIdx, setPlaceholderIdx] = useState(0);
 
-  const handleSubmit = (e: FormEvent) => {
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIdx((prev) => (prev + 1) % PHONE_PLACEHOLDERS.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const handleSelectService = (e: Event) => {
+      const serviceName = (e as CustomEvent).detail;
+      setFormData((prev) => ({ ...prev, service: serviceName }));
+      
+      setTimeout(() => {
+        const input = document.getElementById("service-input");
+        if (input) {
+          input.focus();
+        }
+      }, 300);
+    };
+
+    window.addEventListener("select-service", handleSelectService);
+    return () => window.removeEventListener("select-service", handleSelectService);
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    
+    // JS-based Email Validation Check
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 4000);
+      return;
+    }
+
     setStatus("submitting");
-    // Simulate submission flow without real backend yet
-    setTimeout(() => {
+
+    // 1. EmailJS Flow (Frontend-only Browser Flow)
+    try {
+      const templateParams = {
+        from_name: formData.fullName,
+        from_email: formData.email,
+        company_name: formData.company,
+        phone: formData.phone,
+        service: formData.service,
+        budget: formData.budget,
+        message: formData.description,
+        reply_to: formData.email,
+        to_email: EMAILJS_CONFIG.TO_EMAIL || CONTACT_EMAIL,
+      };
+
+      await emailjs.send(
+        EMAILJS_CONFIG.SERVICE_ID,
+        EMAILJS_CONFIG.TEMPLATE_ID,
+        templateParams,
+        EMAILJS_CONFIG.PUBLIC_KEY
+      );
+
       setStatus("success");
-    }, 1500);
+      setFormData(EMPTY_FORM);
+      setTimeout(() => setStatus("idle"), 4000);
+    } catch (error) {
+      console.error("EmailJS Send Error:", error);
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 4000);
+
+      // Fallback/Legacy options commented out for teammate
+      /*
+      // Google Form submission fallback
+      try {
+        const body = new URLSearchParams();
+        FORM_FIELDS.forEach((f) => {
+          body.append(f.name, formData[f.key as keyof typeof formData]);
+        });
+
+        await fetch(GOOGLE_FORM_ACTION, {
+          method: "POST",
+          mode: "no-cors",
+          body,
+        });
+      } catch {
+        // silently continue
+      }
+
+      // Mailto client fallback
+      const subject = encodeURIComponent(`New Inquiry from ${formData.fullName}`);
+      const mailBody = encodeURIComponent(
+        `Name: ${formData.fullName}\nEmail: ${formData.email}\nCompany: ${formData.company}\nPhone: ${formData.phone}\nService: ${formData.service}\nBudget: ${formData.budget}\n\nDescription:\n${formData.description}`
+      );
+      window.open(`mailto:${CONTACT_EMAIL}?subject=${subject}&body=${mailBody}`, "_self");
+      */
+    }
   };
 
   return (
@@ -46,8 +161,8 @@ export const ContactSection = () => {
                     </div>
                     <div>
                       <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Email Us</p>
-                      <a href="mailto:jenishkp07@gmail.com" className="font-semibold text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                        jenishkp07@gmail.com
+                      <a href="mailto:qorvynsoftware@gmail.com" className="font-semibold text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                        qorvynsoftware@gmail.com
                       </a>
                     </div>
                   </div>
@@ -98,7 +213,7 @@ export const ContactSection = () => {
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                           <User className="w-5 h-5 text-slate-400 dark:text-slate-500" />
                         </div>
-                        <input required type="text" className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm dark:shadow-none placeholder-slate-400" placeholder="John Doe" />
+                        <input required type="text" name="fullName" value={formData.fullName} onChange={handleChange} className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm dark:shadow-none placeholder-slate-400" placeholder="John Doe" />
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -107,7 +222,7 @@ export const ContactSection = () => {
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                           <Mail className="w-5 h-5 text-slate-400 dark:text-slate-500" />
                         </div>
-                        <input required type="email" className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm dark:shadow-none placeholder-slate-400" placeholder="john@company.com" />
+                        <input required type="email" name="email" value={formData.email} onChange={handleChange} className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm dark:shadow-none placeholder-slate-400" placeholder="john@company.com" />
                       </div>
                     </div>
                   </div>
@@ -119,7 +234,7 @@ export const ContactSection = () => {
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                           <Building className="w-5 h-5 text-slate-400 dark:text-slate-500" />
                         </div>
-                        <input type="text" className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm dark:shadow-none placeholder-slate-400" placeholder="Company Ltd." />
+                        <input type="text" name="company" value={formData.company} onChange={handleChange} className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm dark:shadow-none placeholder-slate-400" placeholder="Company Ltd." />
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -128,7 +243,7 @@ export const ContactSection = () => {
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                           <PhoneCall className="w-5 h-5 text-slate-400 dark:text-slate-500" />
                         </div>
-                        <input type="tel" className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm dark:shadow-none placeholder-slate-400" placeholder="+1 (555) 000-0000" />
+                        <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm dark:shadow-none placeholder-slate-400" placeholder={PHONE_PLACEHOLDERS[placeholderIdx]} />
                       </div>
                     </div>
                   </div>
@@ -140,7 +255,7 @@ export const ContactSection = () => {
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                           <Briefcase className="w-5 h-5 text-slate-400 dark:text-slate-500" />
                         </div>
-                        <input type="text" className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm dark:shadow-none placeholder-slate-400" placeholder="e.g. App Development" />
+                        <input id="service-input" type="text" name="service" value={formData.service} onChange={handleChange} className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm dark:shadow-none placeholder-slate-400" placeholder="e.g. App Development" />
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -149,14 +264,14 @@ export const ContactSection = () => {
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                           <Coins className="w-5 h-5 text-slate-400 dark:text-slate-500" />
                         </div>
-                        <input type="text" className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm dark:shadow-none placeholder-slate-400" placeholder="Enter your budget" />
+                        <input type="text" name="budget" value={formData.budget} onChange={handleChange} className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm dark:shadow-none placeholder-slate-400" placeholder="Enter your budget" />
                       </div>
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Project Description</label>
-                    <textarea required rows={4} className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-4 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all resize-none shadow-sm dark:shadow-none placeholder-slate-400" placeholder="Tell us about your requirements, goals, and timeline..."></textarea>
+                    <textarea required rows={4} name="description" value={formData.description} onChange={handleChange} className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-4 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all resize-none shadow-sm dark:shadow-none placeholder-slate-400" placeholder="Tell us about your requirements, goals, and timeline..."></textarea>
                   </div>
 
                   <button 
@@ -166,6 +281,7 @@ export const ContactSection = () => {
                     {status === "idle" && <><Send className="w-4 h-4" /> Send Message</>}
                     {status === "submitting" && "Sending..."}
                     {status === "success" && "Message Sent Successfully!"}
+                    {status === "error" && "Failed to Send. Please Try Again."}
                   </button>
                 </form>
               </PremiumCard>
