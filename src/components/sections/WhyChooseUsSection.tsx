@@ -42,25 +42,31 @@ export const WhyChooseUsSection = () => {
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           <AnimatedSection delay={0.1}>
             <PremiumCard glowColor="purple" hoverEffect={false} className="h-full">
-              <ShieldCheck className="w-10 h-10 text-purple-600 dark:text-purple-400 mb-4" />
-              <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Enterprise-Grade Security</h4>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Implementing industry best practices, vulnerability scanning, and robust secure coding frameworks for every deployment.</p>
+              <div className="flex flex-col items-center text-center w-full h-full py-2">
+                <ShieldCheck className="w-10 h-10 text-purple-600 dark:text-purple-400 mb-4" />
+                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Enterprise-Grade Security</h4>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Implementing industry best practices, vulnerability scanning, and robust secure coding frameworks for every deployment.</p>
+              </div>
             </PremiumCard>
           </AnimatedSection>
           
           <AnimatedSection delay={0.2}>
             <PremiumCard glowColor="blue" hoverEffect={false} className="h-full">
-              <Lock className="w-10 h-10 text-blue-600 dark:text-blue-400 mb-4" />
-              <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Data Privacy & Identity</h4>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Zero-trust architecture, advanced identity management, RBAC, and strict adherence to global privacy protocols.</p>
+              <div className="flex flex-col items-center text-center w-full h-full py-2">
+                <Lock className="w-10 h-10 text-blue-600 dark:text-blue-400 mb-4" />
+                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Data Privacy & Identity</h4>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Zero-trust architecture, advanced identity management, RBAC, and strict adherence to global privacy protocols.</p>
+              </div>
             </PremiumCard>
           </AnimatedSection>
           
           <AnimatedSection delay={0.3}>
             <PremiumCard glowColor="cyan" hoverEffect={false} className="h-full">
-              <Cloud className="w-10 h-10 text-cyan-600 dark:text-cyan-400 mb-4" />
-              <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Secure Cloud Architecture</h4>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Hardened cloud infrastructure, encrypted data at rest and in transit, and continuous monitoring via Azure and native tools.</p>
+              <div className="flex flex-col items-center text-center w-full h-full py-2">
+                <Cloud className="w-10 h-10 text-cyan-600 dark:text-cyan-400 mb-4" />
+                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Secure Cloud Architecture</h4>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Hardened cloud infrastructure, encrypted data at rest and in transit, and continuous monitoring via Azure and native tools.</p>
+              </div>
             </PremiumCard>
           </AnimatedSection>
         </div>

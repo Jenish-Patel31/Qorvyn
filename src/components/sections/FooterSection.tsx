@@ -4,9 +4,27 @@ import { AnimatedSection } from "../ui/AnimatedSection";
 import { ArrowRight, Code, Link, MessageCircle } from "lucide-react";
 import { FormEvent } from "react";
 
+const GOOGLE_FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSdb-h3W6yIdp6Bu6jImEyNn73KlGmvz-8-3q6rORnj39fY1VA/formResponse";
+
 export const PreFooterCTA = () => {
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.currentTarget;
+    const emailInput = form.elements.namedItem("email") as HTMLInputElement;
+    const email = emailInput.value;
+
+    try {
+      await fetch(GOOGLE_FORM_ACTION, {
+        method: "POST",
+        mode: "no-cors",
+        body: new URLSearchParams({
+          "entry.1865925368": email,
+          "entry.1516595138": "Requested AI & Cloud Readiness Audit from pre-CTA",
+        }),
+      });
+    } catch {}
+
+    window.location.href = `#contact`;
   };
 
   return (
@@ -26,6 +44,7 @@ export const PreFooterCTA = () => {
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
             <input 
               type="email" 
+              name="email"
               placeholder="Enter your work email address" 
               required
               className="flex-1 bg-white/10 border border-white/30 rounded-full px-6 py-4 text-white placeholder:text-blue-200 focus:outline-none focus:ring-2 focus:ring-white/50 backdrop-blur-md"
@@ -54,13 +73,13 @@ export const Footer = () => {
               Engineering Intelligent Software for the Future. We specialize in Enterprise Solutions, Microsoft 365, Cloud native platforms, and custom AI applications.
             </p>
             <div className="flex gap-4 pt-2">
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-white hover:bg-blue-600 transition-all">
+              <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-white hover:bg-blue-600 transition-all">
                 <Link className="w-4 h-4" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-white hover:bg-purple-600 transition-all">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-white hover:bg-purple-600 transition-all">
                 <Code className="w-4 h-4" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-white hover:bg-cyan-600 transition-all">
+              <a href="mailto:qorvynsoftware@gmail.com" className="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-white hover:bg-cyan-600 transition-all">
                 <MessageCircle className="w-4 h-4" />
               </a>
             </div>
@@ -71,7 +90,7 @@ export const Footer = () => {
             <ul className="space-y-3">
               {["Enterprise Software", "Microsoft 365 Solutions", "AI & Automation", "Cloud Development", "Web Interfaces", "API Integration"].map(link => (
                 <li key={link}>
-                  <a href="#" className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 text-sm transition-colors">{link}</a>
+                  <a href="#services" className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 text-sm transition-colors">{link}</a>
                 </li>
               ))}
             </ul>
@@ -82,7 +101,7 @@ export const Footer = () => {
             <ul className="space-y-3">
               {["React & Next.js", "SharePoint & SPFx", "Azure Services", "Node.js & Python", ".NET & C#", "Generative AI"].map(link => (
                 <li key={link}>
-                  <a href="#" className="text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 text-sm transition-colors">{link}</a>
+                  <a href="#services" className="text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 text-sm transition-colors">{link}</a>
                 </li>
               ))}
             </ul>
@@ -91,9 +110,16 @@ export const Footer = () => {
           <div>
             <h4 className="text-slate-900 dark:text-white font-bold mb-6">Company</h4>
             <ul className="space-y-3">
-              {["About Us", "Our Work", "Team", "Careers", "Contact", "Schedule Call"].map(link => (
-                <li key={link}>
-                  <a href="#" className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 text-sm transition-colors">{link}</a>
+              {[
+                { name: "About Us", href: "#about" },
+                { name: "Our Work", href: "#work" },
+                { name: "Team", href: "#team" },
+                { name: "Careers", href: "#contact" },
+                { name: "Contact", href: "#contact" },
+                { name: "Schedule Call", href: "#contact" },
+              ].map(link => (
+                <li key={link.name}>
+                  <a href={link.href} className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 text-sm transition-colors">{link.name}</a>
                 </li>
               ))}
             </ul>

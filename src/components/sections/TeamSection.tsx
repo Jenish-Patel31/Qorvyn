@@ -28,7 +28,7 @@ const team: TeamMember[] = [
     ],
     linkedin: "https://www.linkedin.com/in/aksha-katwala-640a4b293",
     whatsapp: "+919173004631",
-    image: "/aksha.jpeg",
+    image: "/aksha.png",
     colorName: "blue",
     colorHex: "#3b82f6" // blue-500
   },

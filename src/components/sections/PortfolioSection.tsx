@@ -9,13 +9,15 @@ import { ExternalLink } from "lucide-react";
 const categories = ["All", "Microsoft", "Enterprise", "AI", "Cloud", "Web", "Automation"];
 
 const projects = [
-  { title: "Microsoft 365 Enterprise Solutions", category: "Microsoft", image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=600&auto=format&fit=crop" },
-  { title: "Construction Management Platform", category: "Enterprise", image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=600&auto=format&fit=crop" },
+  {title: "Food Delivery App", category: "Web", image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=600&auto=format&fit=crop"},
+  {title: "MediBot", category: "AI", image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=600&auto=format&fit=crop" },
+  { title: "Microsoft 365 Enterprise Solutions", category: "Microsoft", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=600&auto=format&fit=crop" },
+  { title: "Construction Management Platform", category: "Enterprise", image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=600&auto=format&fit=crop" },
   { title: "Workflow Automation Systems", category: "Automation", image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600&auto=format&fit=crop" },
   { title: "AI Assistant Platform", category: "AI", image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=600&auto=format&fit=crop" },
-  { title: "Business Dashboards", category: "Web", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop" },
-  { title: "Cloud Applications", category: "Cloud", image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600&auto=format&fit=crop" },
-  { title: "Web Portals", category: "Web", image: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?q=80&w=600&auto=format&fit=crop" },
+  { title: "Business Dashboards", category: "Web", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop" },
+  { title: "Cloud Applications", category: "Cloud", image: "https://images.unsplash.com/photo-1544197450-5dcfe5823ac5?q=80&w=600&auto=format&fit=crop" },
+  { title: "Web Portals", category: "Web", image: "https://images.unsplash.com/photo-1547658719-da2b51169166?q=80&w=600&auto=format&fit=crop" },
   { title: "Document Management Systems", category: "Enterprise", image: "https://images.unsplash.com/photo-1568225422896-10118fb32dc4?q=80&w=600&auto=format&fit=crop" },
 ];
 

@@ -2,7 +2,7 @@
 
 import { AnimatedSection } from "../ui/AnimatedSection";
 import { Search, Workflow, Paintbrush, Blocks, CheckSquare, CloudUpload, LifeBuoy, CheckCircle2 } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const processSteps = [
@@ -59,17 +59,26 @@ const processSteps = [
 
 export const DevelopmentProcessSection = () => {
   const [activeTab, setActiveTab] = useState(processSteps[0]);
-  const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
+  const [isAutoplay, setIsAutoplay] = useState(true);
+
+  useEffect(() => {
+    if (!isAutoplay) return;
+    const interval = setInterval(() => {
+      setActiveTab((current) => {
+        const nextId = (current.id % processSteps.length) + 1;
+        return processSteps.find((s) => s.id === nextId) || processSteps[0];
+      });
+    }, 4500); // 4.5 seconds cycle speed
+    return () => clearInterval(interval);
+  }, [isAutoplay]);
 
   const handleMouseEnter = (step: any) => {
-    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
-    hoverTimeout.current = setTimeout(() => {
-      setActiveTab(step);
-    }, 800);
+    setIsAutoplay(false);
+    setActiveTab(step);
   };
 
   const handleMouseLeave = () => {
-    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+    setIsAutoplay(true);
   };
 
   return (
@@ -84,7 +93,11 @@ export const DevelopmentProcessSection = () => {
           </p>
         </AnimatedSection>
         
-        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-16">
+        <div 
+          onMouseEnter={() => setIsAutoplay(false)}
+          onMouseLeave={() => setIsAutoplay(true)}
+          className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-16"
+        >
           
           {/* Left Column: Tab Controls */}
           <div className="w-full lg:w-1/3 flex flex-col space-y-2">

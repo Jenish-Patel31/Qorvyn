@@ -30,9 +30,8 @@ export const Header = () => {
 
   const generateLinks = () => [
     { name: "Services", href: "#services" },
-    { name: "Work", href: "#work" },
-    { name: "Process", href: "#process" },
     { name: "Team", href: "#team" },
+    { name: "Process", href: "#process" },
     { name: "Contact", href: "#contact" }
   ];
 

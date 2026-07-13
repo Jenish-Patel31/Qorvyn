@@ -1,7 +1,7 @@
 "use client";
 
 import { GradientButton } from "../ui/GradientButton";
-import { ArrowUpRight, Box, Code2, Layers, Cpu, Cloud, Database } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 export const HeroSection = () => {
